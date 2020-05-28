@@ -21,42 +21,64 @@ function operate(num1, num2, operator) {
 function showNumbers() {
   const display = document.querySelector("#display p");
   const buttons = document.querySelectorAll("button");
-  let displayValue = "";
+  let displayValue = [];
   let num = "";
   let operator = "";
   let firstNum = "";
+  let result = "";
 
   buttons.forEach((button) => {
     button.addEventListener("click", (e) => {
-      displayValue += button.textContent;
+      // displayValue += button.textContent;
       display.textContent += button.textContent;
-      console.log(displayValue);
-
+      
       if(button.className == "number") {
         num += button.textContent;
       } else if(button.className == "operator") {
         firstNum = num;
         operator = button.textContent;
         num = "";
-        console.log(`First num: ${firstNum} Operator ${operator}`);
+        displayValue.push(firstNum);
+        displayValue.push(operator);
       } else if(button.className == "equalBtn") {
+        displayValue.push(num);
+        console.log(displayValue);
+        
         for(let i = 0; i < displayValue.length; i++) {
-          let multiplyOp = displayValue.indexOf("*");
-          if(multiplyOp != -1) {
-            let nextOperator = findOperator(displayValue, multiplyOp, +1);
-            console.log(`Operator ${multiplyOp} Index ${nextOperator}`);
-          } 
+          switch (displayValue[i]) {
+            case "+":
+              result += +displayValue[i - 1] + +displayValue[i + 1];
+              break;
+            case "-":
+              result += +displayValue[i - 1] - +displayValue[i + 1];
+              break;
+            case "*":
+              result += +displayValue[i - 1] * +displayValue[i + 1];
+              break;
+            case "/":
+              result += +displayValue[i - 1] / +displayValue[i + 1];
+              break;
+          }
+          console.log('Result :' + result);
         }
       }
     }); 
   });
 }
 
-function findOperator(string, index) {
-  let operators = /[/+/-/*//]/;
-  for(let i = index + 1; i < string.length; i++) {
-    if(operators.test(string[i])) {
-      return i;
+function findOperator(string, index, direction) {
+  let operators = /[=+-/*//]/;
+  if(direction == +1) {
+    for(let i = index + 1; i < string.length; i++) {
+      if(operators.test(string[i])) {
+        return i - 1;
+      }
+    }
+  } else if (direction == -1) {
+    for(let i = index - 1; i > 0; i--) {
+      if(operators.test(string[i])) {
+        return i;
+      }
     }
   }
 }
