@@ -42,23 +42,31 @@ function showNumbers() {
         displayValue.push(operator);
       } else if(button.className == "equalBtn") {
         displayValue.push(num);
-        console.log(displayValue);
         
-        for(let i = 0; i < displayValue.length; i++) {
+        for(let i = 0; i <= displayValue.length; i++) {
           switch (displayValue[i]) {
             case "+":
-              result += +displayValue[i - 1] + +displayValue[i + 1];
+              result = +displayValue[i - 1] + +displayValue[i + 1];
+              displayValue.splice(displayValue[i - 2], 3, result);
+              i = 0;
               break;
             case "-":
-              result += +displayValue[i - 1] - +displayValue[i + 1];
+              result = +displayValue[i - 1] - +displayValue[i + 1];
+              displayValue.splice(displayValue[i - 2], 3, result);
+              i = 0;
               break;
             case "*":
-              result += +displayValue[i - 1] * +displayValue[i + 1];
+              result = +displayValue[i - 1] * +displayValue[i + 1];
+              displayValue.splice(displayValue[i - 2], 3, result);
+              i = 0;
               break;
             case "/":
-              result += +displayValue[i - 1] / +displayValue[i + 1];
+              result = +displayValue[i - 1] / +displayValue[i + 1];
+              displayValue.splice(displayValue[i - 2], 3, result);
+              i = 0;
               break;
           }
+          console.log(displayValue);
           console.log('Result :' + result);
         }
       }
