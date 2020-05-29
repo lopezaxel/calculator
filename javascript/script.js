@@ -48,36 +48,36 @@ function showNumbers() {
           display.textContent += button.textContent;
         }
         num += button.textContent;
-        console.log(`Display textContent ${display.textContent} displayValue
-          ${displayValue}`);
       } else if (button.className == "operator") {
         displayValue.push(num);
         displayValue.push(button.textContent);
         num = "";
+      } else if (button.className == "clearBtn") {
+        display.textContent = "";
+        num = "";
+        result = "";
+        displayValue = [];
       } else if (button.className == "equalBtn") {
         displayValue.push(num);
         num = "";
-        console.log(`Equal ${displayValue}`);
+        
+        loop1:
         for (let e = 0; e < 4; e++) {
           for (let i = 0; i < displayValue.length; i++) {
-            calculate(displayValue, result, i, operators[e]);
-            console.log(`Display value after calculate ${displayValue}`);
+            if (displayValue == Infinity){
+              displayValue = "Can't divide by zero";
+              break loop1;
+            } else {
+              calculate(displayValue, result, i, operators[e]);
+            }
           }
         }
         display.textContent = displayValue;
         displayValue = [];
         flag = true;
-        console.log(`Display Value ${displayValue}`);
       }
     }); 
   });
-}
-
-function clearDisplay(display, displayValue) {
-  display.textContent = "";
-  displayValue = [];
-  num = "";
-  result = "";
 }
 
 function calculate(calculation, result, i, operator) {
