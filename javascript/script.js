@@ -33,45 +33,75 @@ function showNumbers() {
   let displayValue = [];
   let num = "";
   let result = "";
+  let operators = "*/+-";
+  let flag = false;
 
   buttons.forEach((button) => {
     button.addEventListener("click", (e) => {
+      console.log(`before Display Value ${displayValue}`);
       display.textContent += button.textContent;
-
-      if(button.className == "number") {
+      
+      if (button.className == "number") {
+        if (flag == true) {
+          display.textContent = "";
+          flag = false;
+          display.textContent += button.textContent;
+        }
         num += button.textContent;
-      } else if(button.className == "operator") {
+        console.log(`Display textContent ${display.textContent} displayValue
+          ${displayValue}`);
+      } else if (button.className == "operator") {
         displayValue.push(num);
         displayValue.push(button.textContent);
         num = "";
-      } else if(button.className == "equalBtn") {
+      } else if (button.className == "equalBtn") {
         displayValue.push(num);
-        
-        for(let i = 0; i < displayValue.length; i++) {
-          calculate(displayValue, result, i)
-          i = 0;
-          display.textContent = displayValue;
-          console.log(displayValue);
+        num = "";
+        console.log(`Equal ${displayValue}`);
+        for (let e = 0; e < 4; e++) {
+          for (let i = 0; i < displayValue.length; i++) {
+            calculate(displayValue, result, i, operators[e]);
+            console.log(`Display value after calculate ${displayValue}`);
+          }
         }
+        display.textContent = displayValue;
+        displayValue = [];
+        flag = true;
+        console.log(`Display Value ${displayValue}`);
       }
     }); 
   });
 }
 
-function calculate(calculation, result, i) {
+function clearDisplay(display, displayValue) {
+  display.textContent = "";
+  displayValue = [];
+  num = "";
+  result = "";
+}
+
+function calculate(calculation, result, i, operator) {
   switch (calculation[i]) {
-    case "+":
-      result = operate(+calculation[i - 1], +calculation[i + 1], "+");
-      return calculation.splice(calculation[i - 2], 3, result);
-    case "-":
-      result = operate(+calculation[i - 1], +calculation[i + 1], "-");
-      return calculation.splice(calculation[i - 2], 3, result);
     case "*":
-      result = operate(+calculation[i - 1], +calculation[i + 1], "*");
-      return calculation.splice(calculation[i - 2], 3, result);
+      if(operator == "*" || operator == "/") {
+        result = operate(+calculation[i - 1], +calculation[i + 1], "*");
+        return calculation.splice(i - 1, 3, result);
+      }
     case "/":
-      result = operate(+calculation[i - 1], +calculation[i + 1], "/");
-      return calculation.splice(calculation[i - 2], 3, result);
+      if (operator == "/" || operator == "*") {
+        result = operate(+calculation[i - 1], +calculation[i + 1], "/");
+        return calculation.splice(i - 1, 3, result);
+      }
+    case "+":
+      if (operator == "+" || operator == "-") {
+        result = operate(+calculation[i - 1], +calculation[i + 1], "+");
+        return calculation.splice(i - 1, 3, result);
+      }
+    case "-":
+      if (operator == "-" || operator == "+") {
+        result = operate(+calculation[i - 1], +calculation[i + 1], "-");
+        return calculation.splice(i - 1, 3, result);
+      }
     }
 }
 
