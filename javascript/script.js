@@ -38,20 +38,20 @@ function showNumbers() {
 
   buttons.forEach((button) => {
     button.addEventListener("click", (e) => {
-      console.log(`before Display Value ${displayValue}`);
-      display.textContent += button.textContent;
-      
-      if (button.className == "number") {
+      if (button.className == "number" || button.className == "dotBtn") {
         if (flag == true) {
           display.textContent = "";
           flag = false;
-          display.textContent += button.textContent;
+        } else if (button.textContent == "." && num.indexOf(".") != -1) {
+          return;
         }
         num += button.textContent;
+        display.textContent += button.textContent;
       } else if (button.className == "operator") {
         displayValue.push(num);
         displayValue.push(button.textContent);
         num = "";
+        display.textContent += button.textContent;
       } else if (button.className == "clearBtn") {
         display.textContent = "";
         num = "";
@@ -72,7 +72,7 @@ function showNumbers() {
             }
           }
         }
-        display.textContent = displayValue;
+        display.textContent = Math.round(displayValue * 100) / 100;
         displayValue = [];
         flag = true;
       }
@@ -103,6 +103,10 @@ function calculate(calculation, result, i, operator) {
         return calculation.splice(i - 1, 3, result);
       }
     }
+}
+
+function createGrid() {
+
 }
 
 showNumbers();

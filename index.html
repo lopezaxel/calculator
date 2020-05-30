@@ -4,29 +4,31 @@
     <title>Calculator</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="styles/reset.css">
+    <link rel="stylesheet" href="styles/style.css">
   </head>
   <body>
-    <div id="calculator">
+    <div class="calculator" id="calc">
       <div id="display">
         <p></p>
       </div>
-      <div id="buttons">
-        <button class="number">1</button>
-        <button class="number">2</button>
-        <button class="number">3</button>
-        <button class="number">4</button>
-        <button class="number">5</button>
-        <button class="number">6</button>
+      <div class="container" id="buttons">
+        <button class="operator">/</button>
+        <button class="operator">*</button>
+        <button class="operator">-</button>
+        <button class="clearBtn">C</button>
+        <button class="operator" id="plusSign">+</button>
         <button class="number">7</button>
         <button class="number">8</button>
         <button class="number">9</button>
-        <button class="number">0</button>
-        <button class="operator">+</button>
-        <button class="operator">-</button>
-        <button class="operator">*</button>
-        <button class="operator">/</button>
-        <button class="equalBtn">=</button>
-        <button class="clearBtn">C</button>
+        <button class="number">4</button>
+        <button class="number">5</button>
+        <button class="number">6</button>
+        <button class="number">1</button>
+        <button class="number">2</button>
+        <button class="number">3</button>
+        <button class="number" id="zeroNum">0</button>
+        <button class="dotBtn">.</button>
+        <button class="equalBtn" id="equalSign">=</button>
       </div>
     </div>
     <script src="javascript/script.js"></script>
