@@ -27,90 +27,74 @@ function operate(num1, num2, operator) {
   }
 }
 
-function showNumbers() {
+function startCalculator() {
   const display = document.querySelector("#display p");
   const buttons = document.querySelectorAll("button");
   let displayValue = [];
   let num = "";
-  let result = "";
   let operators = "*/+-";
-  let flag = false;
+  let newText = false;
 
-  buttons.forEach((button) => {
-    button.addEventListener("click", (e) => {
-      if (button.className == "number" || button.className == "dotBtn") {
-        if (flag == true) {
+  buttons.forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      switch (btn.className) {
+        case "dotBtn":
+        case "number":
+          if (newText == true) {
+            display.textContent = "";
+            newText = false;
+          } else if (btn.textContent == "." && num.indexOf(".") != -1) return; 
+          num += btn.textContent;
+          display.textContent += btn.textContent;
+          break;          
+        case "operator":
+          display.textContent += btn.textContent;
+          displayValue.push(num, btn.textContent);
+          num = "";
+          break;
+        case "clearBtn":
           display.textContent = "";
-          flag = false;
-        } else if (button.textContent == "." && num.indexOf(".") != -1) {
-          return;
-        }
-        num += button.textContent;
-        display.textContent += button.textContent;
-      } else if (button.className == "operator") {
-        displayValue.push(num);
-        displayValue.push(button.textContent);
-        num = "";
-        display.textContent += button.textContent;
-      } else if (button.className == "clearBtn") {
-        display.textContent = "";
-        num = "";
-        result = "";
-        displayValue = [];
-      } else if (button.className == "undoneBtn") {
-        num = num.slice(0, -1);
-        console.log(num);
-        display.textContent = display.textContent.slice(0, -1);
-      } else if (button.className == "equalBtn") {
-        displayValue.push(num);
-        num = "";
-        
-        loop1:
-        for (let e = 0; e < 4; e++) {
-          for (let i = 0; i < displayValue.length; i++) {
-            if (displayValue == Infinity){
-              displayValue = "Can't divide by zero";
-              break loop1;
-            } else {
-              calculate(displayValue, result, i, operators[e]);
+          displayValue = [];
+          num = "";
+          break;
+        case "undoneBtn":
+          num = num.slice(0, -1);
+          display.textContent = display.textContent.slice(0, -1);
+          break;
+        case "equalBtn":
+          displayValue.push(num);
+          num = "";
+          
+          loop1:
+          for (let e = 0; e < 4; e++) {
+            for (let i = 0; i < displayValue.length; i++) {
+              if (displayValue == Infinity){
+                displayValue = "Can't divide by zero";
+                break loop1;
+              } 
+              calculate(displayValue, i, operators[e]);
             }
           }
-        }
-        display.textContent = Math.round(displayValue * 100) / 100;
-        displayValue = [];
-        flag = true;
+    
+          display.textContent = Math.round(displayValue * 100) / 100;
+          displayValue = [];
+          newText = true;
+          break;
       }
     }); 
   });
 }
 
-function calculate(calculation, result, i, operator) {
-  switch (calculation[i]) {
-    case "*":
-      if(operator == "*" || operator == "/") {
-        result = operate(+calculation[i - 1], +calculation[i + 1], "*");
-        return calculation.splice(i - 1, 3, result);
-      }
-    case "/":
-      if (operator == "/" || operator == "*") {
-        result = operate(+calculation[i - 1], +calculation[i + 1], "/");
-        return calculation.splice(i - 1, 3, result);
-      }
-    case "+":
-      if (operator == "+" || operator == "-") {
-        result = operate(+calculation[i - 1], +calculation[i + 1], "+");
-        return calculation.splice(i - 1, 3, result);
-      }
-    case "-":
-      if (operator == "-" || operator == "+") {
-        result = operate(+calculation[i - 1], +calculation[i + 1], "-");
-        return calculation.splice(i - 1, 3, result);
-      }
-    }
+function calculate(calc, i, operator) {
+  if(calc[i] == "*" && (operator == "*" || operator == "/")) {
+    return calc.splice(i - 1, 3, operate(+calc[i - 1], +calc[i + 1], "*"));
+  } else if (calc[i] == "/" && (operator == "/" || operator == "*")) {
+    return calc.splice(i - 1, 3, operate(+calc[i - 1], +calc[i + 1], "/"));
+  } else if (calc[i] == "+" && (operator == "+" || operator == "-")) {
+    return calc.splice(i - 1, 3, operate(+calc[i - 1], +calc[i + 1], "+"));
+  } else if (calc[i] == "-" && (operator == "-" || operator == "+")) {
+    return calc.splice(i - 1, 3, operate(+calc[i - 1], +calc[i + 1], "-"));
+  }   
 }
 
-function createGrid() {
-
-}
-
-showNumbers();
+startCalculator();
