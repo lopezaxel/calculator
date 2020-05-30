@@ -57,6 +57,10 @@ function showNumbers() {
         num = "";
         result = "";
         displayValue = [];
+      } else if (button.className == "undoneBtn") {
+        num = num.slice(0, -1);
+        console.log(num);
+        display.textContent = display.textContent.slice(0, -1);
       } else if (button.className == "equalBtn") {
         displayValue.push(num);
         num = "";
