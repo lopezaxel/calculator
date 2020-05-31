@@ -39,9 +39,10 @@ function calculate(calc, i, operator) {
   }   
 }
 
-function getOperator(btn) {
-  display.textContent += btn.textContent;
-  displayValue.push(num, btn.textContent);
+function getOperator(e, btn = "") {
+  let value = e.key ? e.key : btn.textContent
+  display.textContent += value;
+  displayValue.push(num, value);
   num = "";
 }
 
@@ -76,51 +77,71 @@ function getResult() {
   newText = true;
 }
 
-function getNumber(btn) {
+function getNumber(e, btn = "") {
   if (newText == true) {
     display.textContent = "";
     newText = false;
   }
-  num += btn.textContent;
-  display.textContent += btn.textContent;
+  let value = e.key ? e.key : btn.textContent
+  num += value;
+  display.textContent += value;
 }
 
-function checkEnterDot(btn) {
+function checkEnterDot(e, btn = "") {
+  console.log(e.key);
   if (btn.textContent == "." && num.indexOf(".") != -1) {
     return true;
-  };
+  } else if (e.key == "." && num.indexOf(".") != -1) {
+    return true;
+  }
 }
 
-function startCalculator() {
-  buttons.forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      if (btn.className == "number" || btn.className == "dotBtn") {
-        if (checkEnterDot(btn)) return;
-        getNumber(btn);
-      } else if (btn.className == "operator") {
-        getOperator(btn);
-      } else if (btn.className == "clearBtn") {
-        getClear();
-      } else if (btn.className == "undoneBtn") {
-        undoneLastNum();
-      } else if (btn.className == "equalBtn") {
-        getResult();
-      }
-    }); 
-  });  
+function respondClickInput(e, btn) {
+  if (btn.className == "number" || btn.className == "dotBtn") {
+    if (checkEnterDot(e, btn)) return;
+    getNumber(e, btn);
+  } else if (btn.className == "operator") {
+    getOperator(e, btn);
+  } else if (btn.className == "clearBtn") {
+    getClear();
+  } else if (btn.className == "undoneBtn") {
+    undoneLastNum();
+  } else if (btn.className == "equalBtn") {
+    getResult();
+  }
+}
+
+function respondKeyInput(e) {
+  if (numberKeyCodes.includes(e.key) || e.key == ".") {
+    if (checkEnterDot(e)) return;
+    getNumber(e);
+  } else if (operatorKeyCodes.includes(e.key)) {
+    getOperator(e);
+  } else if (e.key == "c" || e.key == "C") {
+    getClear();
+  } else if (e.key == "Backspace") {
+    undoneLastNum();
+  } else if (e.key == "=") {
+    getResult();
+  }
 }
 
 const display = document.querySelector("#display p");
 const buttons = document.querySelectorAll("button");
+const operatorKeyCodes = ["*", "/", "+", "-",];
+const numberKeyCodes = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9",];
 let displayValue = [];
 let num = "";
 let operators = "*/+-";
 let newText = false;
 
-document.addEventListener("keydown", (e) => {
-  if (e.keyCode == 48) {
-    console.log("dou 0");
-  }
-})
+buttons.forEach((btn) => {
+  btn.addEventListener("click", (e) => {
+    respondClickInput(e, btn);
+  });
+});
 
-startCalculator();
+document.addEventListener("keydown", (e) => {
+  respondKeyInput(e);
+});
+
