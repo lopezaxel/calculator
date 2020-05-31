@@ -27,64 +27,6 @@ function operate(num1, num2, operator) {
   }
 }
 
-function startCalculator() {
-  const display = document.querySelector("#display p");
-  const buttons = document.querySelectorAll("button");
-  let displayValue = [];
-  let num = "";
-  let operators = "*/+-";
-  let newText = false;
-
-  buttons.forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      switch (btn.className) {
-        case "dotBtn":
-        case "number":
-          if (newText == true) {
-            display.textContent = "";
-            newText = false;
-          } else if (btn.textContent == "." && num.indexOf(".") != -1) return; 
-          num += btn.textContent;
-          display.textContent += btn.textContent;
-          break;          
-        case "operator":
-          display.textContent += btn.textContent;
-          displayValue.push(num, btn.textContent);
-          num = "";
-          break;
-        case "clearBtn":
-          display.textContent = "";
-          displayValue = [];
-          num = "";
-          break;
-        case "undoneBtn":
-          num = num.slice(0, -1);
-          display.textContent = display.textContent.slice(0, -1);
-          break;
-        case "equalBtn":
-          displayValue.push(num);
-          num = "";
-          
-          loop1:
-          for (let e = 0; e < 4; e++) {
-            for (let i = 0; i < displayValue.length; i++) {
-              if (displayValue == Infinity){
-                displayValue = "Can't divide by zero";
-                break loop1;
-              } 
-              calculate(displayValue, i, operators[e]);
-            }
-          }
-    
-          display.textContent = Math.round(displayValue * 100) / 100;
-          displayValue = [];
-          newText = true;
-          break;
-      }
-    }); 
-  });
-}
-
 function calculate(calc, i, operator) {
   if(calc[i] == "*" && (operator == "*" || operator == "/")) {
     return calc.splice(i - 1, 3, operate(+calc[i - 1], +calc[i + 1], "*"));
@@ -96,5 +38,89 @@ function calculate(calc, i, operator) {
     return calc.splice(i - 1, 3, operate(+calc[i - 1], +calc[i + 1], "-"));
   }   
 }
+
+function getOperator(btn) {
+  display.textContent += btn.textContent;
+  displayValue.push(num, btn.textContent);
+  num = "";
+}
+
+function getClear() {
+  display.textContent = "";
+  displayValue = [];
+  num = "";
+}
+
+function undoneLastNum() {
+  num = num.slice(0, -1);
+  display.textContent = display.textContent.slice(0, -1);
+}
+
+function getResult() {
+  displayValue.push(num);
+  num = "";
+  
+  loop1:
+  for (let e = 0; e < 4; e++) {
+    for (let i = 0; i < displayValue.length; i++) {
+      if (displayValue == Infinity){
+        displayValue = "Can't divide by zero";
+        break loop1;
+      } 
+      calculate(displayValue, i, operators[e]);
+    }
+  }
+
+  display.textContent = Math.round(displayValue * 100) / 100;
+  displayValue = [];
+  newText = true;
+}
+
+function getNumber(btn) {
+  if (newText == true) {
+    display.textContent = "";
+    newText = false;
+  }
+  num += btn.textContent;
+  display.textContent += btn.textContent;
+}
+
+function checkEnterDot(btn) {
+  if (btn.textContent == "." && num.indexOf(".") != -1) {
+    return true;
+  };
+}
+
+function startCalculator() {
+  buttons.forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      if (btn.className == "number" || btn.className == "dotBtn") {
+        if (checkEnterDot(btn)) return;
+        getNumber(btn);
+      } else if (btn.className == "operator") {
+        getOperator(btn);
+      } else if (btn.className == "clearBtn") {
+        getClear();
+      } else if (btn.className == "undoneBtn") {
+        undoneLastNum();
+      } else if (btn.className == "equalBtn") {
+        getResult();
+      }
+    }); 
+  });  
+}
+
+const display = document.querySelector("#display p");
+const buttons = document.querySelectorAll("button");
+let displayValue = [];
+let num = "";
+let operators = "*/+-";
+let newText = false;
+
+document.addEventListener("keydown", (e) => {
+  if (e.keyCode == 48) {
+    console.log("dou 0");
+  }
+})
 
 startCalculator();
